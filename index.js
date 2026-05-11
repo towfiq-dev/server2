@@ -3,7 +3,7 @@ const app = express()
 const dotenv = require('dotenv')
 dotenv.config()
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.URI
 const uri = process.env.DB_URI
 
@@ -26,6 +26,30 @@ async function run() {
 
     app.get('/users', async(req, res)=>{
       const result = await crudCollection.find().toArray()
+      res.send(result)
+    })
+
+    app.get('/users/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {
+        _id: new ObjectId(id)
+      }
+      const result = await crudCollection.findOne(query)
+      res.send(result)
+    })
+
+    app.delete('/users/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = {
+        _id: new ObjectId(id)
+      }
+      const result = await crudCollection.deleteOne(query)
+      res.send(result)
+    })
+
+    app.post('/users', async(req, res)=>{
+      const newUser = req.body
+      const result  = await crudCollection.insertOne(newUser)
       res.send(result)
     })
 
