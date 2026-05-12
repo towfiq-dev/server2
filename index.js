@@ -53,6 +53,21 @@ async function run() {
       res.send(result)
     })
 
+    app.patch('/users/:id', async(req,res)=>{
+      const id = req.params.id
+      const query={
+        _id: new ObjectId(id)
+      }
+      const modify = req.body
+      const modified = {
+        $set:{
+          ...modify
+        }
+      }
+      const result = await crudCollection.updateOne(query, modified)
+      res.send(result)
+    })
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
